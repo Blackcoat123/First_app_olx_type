@@ -4,11 +4,13 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert'; // For Base64 encoding/decoding
 import 'package:image/image.dart' as img; // Add prefix 'img' to avoid conflict
+import 'package:kuchbhi/pages/home_page.dart';
+import 'myads_page.dart'; // Import the MyAdsPage
 
 class AddItemPage extends StatefulWidget {
   final String userId; // Pass the current user's ID
 
-  AddItemPage({required this.userId});
+  const AddItemPage({required this.userId});
 
   @override
   _AddItemPageState createState() => _AddItemPageState();
@@ -87,6 +89,14 @@ class _AddItemPageState extends State<AddItemPage> {
         _selectedLocation = null;
         _image = null;
       });
+
+      // Navigate to MyAdsPage after successful submission
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(), // Pass the userId
+        ),
+      );
     } catch (e) {
       print('Error submitting data: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -102,13 +112,19 @@ class _AddItemPageState extends State<AddItemPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle:true ,
-         backgroundColor: Colors.blueGrey.shade700,
-         title:Text("Add Item",textAlign: TextAlign.center,
-             style: TextStyle(
-                 fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white))),
-
-
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.blueGrey.shade700,
+        title: Text(
+          "Add Item",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -136,7 +152,12 @@ class _AddItemPageState extends State<AddItemPage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: _image == null
-                      ? Center(child: Text("Add Images", style: TextStyle(fontSize: 16, color: Colors.white)))
+                      ? Center(
+                    child: Text(
+                      "Add Images",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  )
                       : Image.file(_image!, fit: BoxFit.cover), // Flutter's Image widget
                 ),
               ),
@@ -181,7 +202,10 @@ class _AddItemPageState extends State<AddItemPage> {
                 items: _locations.map((location) {
                   return DropdownMenuItem(
                     value: location,
-                    child: Text(location, style: TextStyle(color: Colors.white)), // White text for dropdown items
+                    child: Text(
+                      location,
+                      style: TextStyle(color: Colors.white), // White text for dropdown items
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -257,7 +281,10 @@ class _AddItemPageState extends State<AddItemPage> {
                   onPressed: _isLoading ? null : _submitData,
                   child: _isLoading
                       ? CircularProgressIndicator(color: Colors.white)
-                      : Text("Submit", style: TextStyle(fontSize: 16, color: Colors.white)), // Set text color to white
+                      : Text(
+                    "Submit",
+                    style: TextStyle(fontSize: 16, color: Colors.white), // Set text color to white
+                  ),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(

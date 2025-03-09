@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:kuchbhi/pages/login_page.dart';
-
-bool signout = false;
+import 'login_page.dart'; // Import the LoginPage
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -110,7 +108,7 @@ class ProfilePage extends StatelessWidget {
                       SizedBox(height: 8),
 
                       // Sign Out Button with Icon
-                      SizedBox(height: 20), // Added extra space to position the button slightly lower
+                      SizedBox(height: 20),
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -118,16 +116,37 @@ class ProfilePage extends StatelessWidget {
                           border: Border.all(color: Colors.white38, width: 1.5),
                         ),
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            signout = true;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginPage(
-                                  onToggle: () {}, // You can leave it empty if toggle is not needed
-                                ),
+                          onPressed: () async {
+                            final confirmed = await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Confirm Sign Out"),
+                                content: Text("Are you sure you want to sign out?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, false),
+                                    child: Text("Cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context, true),
+                                    child: Text("Sign Out"),
+                                  ),
+                                ],
                               ),
                             );
+
+                            if (confirmed == true) {
+                              await FirebaseAuth.instance.signOut(); // Clear the session
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginPage(
+                                    onToggle: () {},
+                                    allowAccountCreation: false, // Disable account creation
+                                  ),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
@@ -144,7 +163,7 @@ class ProfilePage extends StatelessWidget {
                       ),
 
                       // Rate the App Button with Icon
-                      SizedBox(height: 12), // Space between Sign Out and Rate the App buttons
+                      SizedBox(height: 12),
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -152,7 +171,21 @@ class ProfilePage extends StatelessWidget {
                           border: Border.all(color: Colors.white38, width: 1.5),
                         ),
                         child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Rate the App"),
+                                content: Text("This feature is not yet ready. Stay tuned!"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text("OK"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
                             foregroundColor: Colors.white,

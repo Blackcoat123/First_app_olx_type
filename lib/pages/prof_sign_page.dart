@@ -8,15 +8,15 @@ import 'package:image/image.dart' as img; // Add prefix 'img' to avoid conflict
 
 import 'home_page.dart';
 
-class ProfilePage extends StatefulWidget {
+class Profile_Page extends StatefulWidget {
   final String userId; // Add userId parameter
-  ProfilePage({required this.userId}); // Update constructor
+  Profile_Page({required this.userId}); // Update constructor
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<Profile_Page> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController contactController = TextEditingController();

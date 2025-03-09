@@ -51,6 +51,7 @@ class _ChatMessagesState extends State<ChatMessages> {
       return;
     }
 
+    // Save the message
     await FirebaseFirestore.instance
         .collection('chats')
         .doc(chatId)
@@ -61,7 +62,31 @@ class _ChatMessagesState extends State<ChatMessages> {
       'timestamp': FieldValue.serverTimestamp(),
     });
 
-    _messageController.clear(); // Clear the input field after sending
+    // Fetch the sender's details
+    final senderDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(authenticatedUser.uid)
+        .get();
+
+    final senderName = senderDoc.exists
+        ? '${senderDoc['firstName']} ${senderDoc['lastName']}'
+        : 'Unknown';
+
+    // Save a notification for the recipient
+    final recipientId = widget.otherUserId;
+    await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(recipientId)
+        .collection('userNotifications')
+        .add({
+      'title': 'New Message',
+      'body': 'You have a new message from $senderName', // Include sender's name
+      'timestamp': FieldValue.serverTimestamp(),
+      'read': false,
+      'otherUserId': authenticatedUser.uid, // Include sender's ID
+    });
+
+    _messageController.clear();
   }
 
   @override
@@ -75,7 +100,6 @@ class _ChatMessagesState extends State<ChatMessages> {
     }
 
     final String chatId = getChatId(authenticatedUser.uid, widget.otherUserId);
-    print("Chat ID: $chatId"); // Debugging: Print the chat ID
 
     return Scaffold(
       appBar: AppBar(
@@ -93,27 +117,23 @@ class _ChatMessagesState extends State<ChatMessages> {
                   .snapshots(),
               builder: (ctx, chatSnapshots) {
                 if (chatSnapshots.connectionState == ConnectionState.waiting) {
-                  print("Waiting for data..."); // Debugging
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
 
                 if (chatSnapshots.hasError) {
-                  print("Error: ${chatSnapshots.error}"); // Debugging
                   return const Center(
                     child: Text('Something went wrong.'),
                   );
                 }
 
                 if (!chatSnapshots.hasData || chatSnapshots.data!.docs.isEmpty) {
-                  print("No messages found."); // Debugging
                   return const Center(
                     child: Text('No messages found.'),
                   );
                 }
 
-                print("Messages loaded: ${chatSnapshots.data!.docs.length}"); // Debugging
                 final loadedMessages = chatSnapshots.data!.docs;
 
                 return ListView.builder(

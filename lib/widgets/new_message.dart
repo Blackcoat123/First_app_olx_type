@@ -2,16 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class NewMessage extends StatefulWidget {
-  const NewMessage({super.key});
+class Gomessage extends StatefulWidget {
+  const Gomessage({super.key});
 
   @override
-  State<NewMessage> createState() {
+  State<Gomessage> createState() {
     return _NewMessageState();
   }
 }
 
-class _NewMessageState extends State<NewMessage> {
+class _NewMessageState extends State<Gomessage> {
   final _messageController = TextEditingController();
 
   @override

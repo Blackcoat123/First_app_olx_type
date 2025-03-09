@@ -16,12 +16,18 @@ class OTPService {
       "textContent": "Your OTP is: $otp"
     });
 
-    final response = await http.post(url, headers: headers, body: body);
+    try {
+      final response = await http.post(url, headers: headers, body: body);
 
-    if (response.statusCode == 201) {
-      return true;
-    } else {
-      print("Failed to send OTP: ${response.body}");
+      if (response.statusCode == 201) {
+        return true; // Email sent successfully
+      } else {
+        print("Failed to send OTP. Status Code: ${response.statusCode}");
+        print("Response Body: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("Error sending OTP: $e");
       return false;
     }
   }

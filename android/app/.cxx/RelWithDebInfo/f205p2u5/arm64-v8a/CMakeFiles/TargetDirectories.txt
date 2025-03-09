@@ -1,0 +1,2 @@
+C:/Users/dhana/AndroidStudioProjects/newkuchbhi/android/app/.cxx/RelWithDebInfo/f205p2u5/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/dhana/AndroidStudioProjects/newkuchbhi/android/app/.cxx/RelWithDebInfo/f205p2u5/arm64-v8a/CMakeFiles/rebuild_cache.dir

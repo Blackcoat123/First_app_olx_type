@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kuchbhi/pages/prof_sign_page.dart';
 import '../services/firestore_service.dart'; // For OTP verification
-import 'prof_sign_page.dart'; // For navigation after OTP verification
+import 'profile_page.dart'; // For navigation after OTP verification
 
 class OTPVerifyPage extends StatelessWidget {
   final String email;
@@ -21,7 +22,7 @@ class OTPVerifyPage extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => ProfilePage(userId: userId),
+          builder: (_) => Profile_Page(userId: userId),
         ),
       );
     } else {

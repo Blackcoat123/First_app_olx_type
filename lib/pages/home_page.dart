@@ -11,7 +11,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:kuchbhi/widgets/chat_messages.dart';
+import 'package:badges/badges.dart' as badges; // For the notification badge
 
+import '../services/notification.dart';
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -56,12 +58,50 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         actions: [
-          SvgPicture.asset(
-            'assets/logo_ab.svg',
-            height: 40,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
+          // Notification Icon with Unread Count Badge
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('notifications')
+                .doc(userId)
+                .collection('userNotifications')
+                .where('read', isEqualTo: false)
+                .snapshots(),
+            builder: (ctx, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return IconButton(
+                  icon: Icon(Icons.notifications),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationsPage(),
+                      ),
+                    );
+                  },
+                );
+              }
+
+              final unreadCount = snapshot.data?.docs.length ?? 0;
+
+              return badges.Badge(
+                showBadge: unreadCount > 0,
+                badgeContent: Text(
+                  '$unreadCount',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: IconButton(
+                  icon: Icon(Icons.notifications),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationsPage(),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -88,7 +128,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
 class HomeContent extends StatefulWidget {
   @override
   _HomeContentState createState() => _HomeContentState();
